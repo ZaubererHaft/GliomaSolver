@@ -45,7 +45,7 @@ if [ $p -eq 1 ]; then
 	# Convert posterior from log(), T=sqrt(c/rho)
         logPosterior=curgen_db_$(printf "%03d" ${Ngen}).txt
         filename=posterior.txt
-	awk -v N=$Nparam '{for(i=1;i<=N;i++) 
+	gawk -v N=$Nparam '{for(i=1;i<=N;i++) 
                           {j=i; $j=exp($j) } 
                           $3 = sqrt($3/$2);
                           print $0 }' ${logPosterior} > ${filename}      
@@ -95,8 +95,7 @@ EOF
 	MAPfolder=MAP
 	mkdir -p ${MAPfolder}
 
-        brainHRPath=$( cat ${InputFile} | awk -F '=' '/^DataPath/ {print $2}')
-        cp "${brainHRPath}/../brain256" ${MAPfolder}
+        cp "${MyBase}/../brain256" ${MAPfolder}
 	cd ${MAPfolder}
 
 	
@@ -119,7 +118,7 @@ EOF
         chmod +x run.sh		
 	./run.sh
 	mv HGG_data.dat MAP.dat	
-	mkdir Paraview 
+	rm -r Paraview && mkdir Paraview 
 	mv *vtu Paraview/
 	
 	echo " "
@@ -149,12 +148,12 @@ EOF
 	mkdir "${VisFolder}"
 	cp "${InputNiiPath}"/* 	"${VisFolder}"
 	cp MAP.nii "${VisFolder}"
-	InputNiftyData="${MyBase}/${VisFolder}"
+	InputNiftyData=${MyBase}/${VisFolder}
 	
 	cd "${MatlabTools}"
         matlab -nodisplay -nosplash -nodesktop -r "plotAllNiftyData('${InputNiftyData}'); exit"
         cd "$MyBase"  
-	mv Vis/Overview.jpg .
+	rm Overview.jpg && mv Vis/Overview.jpg .
 	rm -r Vis      
 
 	echo " "
