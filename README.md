@@ -4,7 +4,6 @@ _Tool for simulating tumor dynamics in patient-specific anatomy reconstructed fr
 #### Hard- & Software requirements:
  * at least 8 GB of RAM (brain256 consumes up to 5.3 GB)
  * up to 8GB of free disk space
- * gcc compiler
  * A licensed MATLAB installation accessible via the command-line (has to be in the PATH variable)
  * The MATLAB toolbox "Image Processing Toolbox"
 
