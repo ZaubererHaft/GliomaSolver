@@ -1,6 +1,12 @@
 ## Software for realistic tumor modeling
 _Tool for simulating tumor dynamics in patient-specific anatomy reconstructed from the medical scans._
 
+#### Hard- & Software requirements:
+ * at least 8 GB of RAM (brain256 consumes up to 5.3 GB)
+ * up to 8GB of free disk space
+ * A licensed MATLAB installation accessible via the command-line (has to be in the PATH variable)
+ * The MATLAB toolbox "Image Processing Toolbox"
+
 #### Supported tumor models:
  * Tumor growth (Reaction-diffusion model)
  * Tumor mass effect and intracranial pressure (Brain deformation model)
@@ -19,15 +25,15 @@ _Tool for simulating tumor dynamics in patient-specific anatomy reconstructed fr
 Please visit the [GliomaSolver](http://tdo.sk/~janka/GliomaWebsite//index.html) homepage for installation, tutorials, sample of glioma data, and much more :panda_face:.
 
 #### Data & Resources
-For additioanl data and softwares, please visit the solver's homepage, section [References](http://tdo.sk/~janka/GliomaWebsite/references.html). The most used links are also listed below.
- * Data used for the personalized radiotherhpy planning in [1] are avaialble [here](http://tdo.sk/~janka/GliomaSolverHome/GlioblastomaDATA.tgz)
+For additional data and softwares, please visit the solver's homepage, section [References](http://tdo.sk/~janka/GliomaWebsite/references.html). The most used links are also listed below.
+ * Data used for the personalized radiotherapy planning in [1] are available [here](http://tdo.sk/~janka/GliomaSolverHome/GlioblastomaDATA.tgz)
  * A brain atlas and precomputed phase-field function, used for the deformation model, can be found [here](http://tdo.sk/~janka/GliomaSolverHome/TutorialTestData/AtlasPFF.tgz)
  * For automated image-registration tool see [here](https://github.com/JanaLipkova/Registration)
  * For automated skull-stripping and brain tissue segmentation tool see [here](https://github.com/JanaLipkova/s3)
  
 
 #### References
-In publications using GliomaSolver or data released with this solver pleace cite:
+In publications using GliomaSolver or data released with this solver please cite:
 
 [1] Lipkova et al., *Personalized Radiotherapy Design for Glioblastoma Using Mathematical Tumor Modelling, Multimodal Scans and Bayesian Inference. IEEE Transactions on Medical Imaging (2019).* 
 

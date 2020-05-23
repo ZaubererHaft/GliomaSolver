@@ -117,7 +117,7 @@ CPPFLAGS += -D_TESTS
 endif
 
 brain: $(OBJECTS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) $^ -o $@ $(LIBS) -no-pie
 	@echo done 
 
 %.o: %.cpp
