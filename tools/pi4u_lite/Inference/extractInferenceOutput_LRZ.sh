@@ -1,5 +1,7 @@
 #!/bin/bash
 
+module load matlab	#lad matlab module
+
 #  Helpers
 #-----------------------------------------------------
 function last_column_max_row() {
@@ -170,6 +172,7 @@ EOF
         echo ">>>   Creating the Results folders  <<<"
         echo "---------------------------------------"
 	ResultsFolder=${InputNiiPath:0:-1}_Results
+	rm -r -f ${ResultsFolder}		#old results will be removed!!
 	mkdir -p ${ResultsFolder} 
 	cp ReportFile.md ${ResultsFolder} 
 	cp MAP/MAP.nii ${ResultsFolder}
@@ -195,9 +198,11 @@ EOF
 	    sed -i 's|_std_p'"${i}"'_|'"${std[${i}]}"'|g' ReportFile.md
 	done
 
-	pandoc ReportFile.md -o ReportFile.pdf
+	#pandpandoc ReportFile.md -o ReportFile.pdf	#TODO: currecntly no easy way to get pandoc on LRZ cluster
+	echo "pandoc ReportFile.md -o ReportFile.pdf" > runLocal.sh	#create file that has to be executed on a system with pandoc
+	chmod +x runLocal.sh										#TODO: remove this workaround wehen better solution is found
 	cd ../
-	
+
 	echo " The Results are stored in:"
 	echo " ${ResultsFolder}"
 	
