@@ -5,6 +5,10 @@ echo "------------------------------------------------------"
 echo "          SETTING-UP INFERENCE ENVIROMENT             "
 echo "------------------------------------------------------"
 
+if [ $LRZ_SYSTEM_SEGMENT != "" ]
+then
+    module load matlab
+fi
 
 InputFile=Input.txt
 DataPath=$(  cat ${InputFile} | awk -F '=' '/^DataPath/ {print $2}')
