@@ -19,7 +19,7 @@ module load gsl
 
 
 # Set up paths libraries
-LIB_BASE="/dss/dsshome1/lxc0D/ge69yed2/IBBM/GliomaSolver/LRZversion/lib"
+LIB_BASE="_USER_LIB_BASE_"
 
 export LD_LIBRARY_PATH=/lrz/sys/libraries/gsl/2.4/lib/:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/lrz/sys/libraries/hypre/2.11.2/lib/:$LD_LIBRARY_PATH

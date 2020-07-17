@@ -3,7 +3,7 @@ OPENMP_FLAG= -fopenmp -fpermissive
 
 # Set up paths libraries
 
-LIB_BASE="/dss/dsshome1/lxc0D/ge69yed2/IBBM/GliomaSolver/LRZversion/lib"
+LIB_BASE="_USER_LIB_BASE_"
 
 
 TBB_INC_DIR=$(LIB_BASE)/tbb40_20120613oss/include

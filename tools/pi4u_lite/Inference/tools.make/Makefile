@@ -4,8 +4,8 @@ ifdef LRZ_SYSTEM_SEGMENT	#we are on a LRZ system
 	GSL_INC_DIR=/lrz/sys/libraries/gsl/2.3/include
 	GSL_LIB_DIR=/lrz/sys/libraries/gsl/2.3/lib
 else
-	GSL_INC_DIR="/dss/dsshome1/lxc0D/ge69yed2/IBBM/GliomaSolver/LRZversion/lib"/gsl-install/include/
-	GSL_LIB_DIR="/dss/dsshome1/lxc0D/ge69yed2/IBBM/GliomaSolver/LRZversion/lib"/gsl-install/lib/
+	GSL_INC_DIR="_USER_LIB_BASE_"/gsl-install/include/
+	GSL_LIB_DIR="_USER_LIB_BASE_"/gsl-install/lib/
 endif
 
 #ifneq "$(findstring kraken, $(shell hostname))" ""
