@@ -333,6 +333,8 @@ then
     if [ $LRZ != "yes" ]
     then
         echo "export LD_LIBRARY_PATH=\$LIB_BASE/gsl-install/lib/:\$LD_LIBRARY_PATH"
+    else
+        echo "export LD_LIBRARY_PATH=/lrz/sys/libraries/gsl/2.3/lib:\$LD_LIBRARY_PATH"
     fi
     echo "export PATH=\$LIB_BASE/usr/torc/bin:\$PATH"
     #cat "${SolverDir}/tools/pi4u_lite/Inference/setup_${UserName}.sh"
