@@ -5,7 +5,7 @@ hn ?= $(shell hostname)
 
 ifneq "$(findstring _USER_NAME_,$(shell hostname))" ""
 include make._USER_NAME_
-else ifneq "$(findstring mpp,$(shell hostname))" ""
+else ifdef LRZ_SYSTEM_SEGMENT
 include make.lrz
 else ifneq "$(findstring kraken,$(shell hostname))" ""
 include make.kraken
