@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import SimpleITK as sitk
 import logging
 import sys
