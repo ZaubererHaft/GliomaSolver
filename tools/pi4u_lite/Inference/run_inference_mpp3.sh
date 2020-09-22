@@ -39,16 +39,6 @@ module load gsl     #requires intel/19.1.0
 module load matlab   #extracting the Inference output needs this!
 module list
 
-# Libraries
-export LIB_BASE=$HOME/IBBM/GliomaSolver/lib
-export LD_LIBRARY_PATH=$LIB_BASE/tbb40_20120613oss/build/linux_intel64_gcc_cc4.6.1_libc2.5_kernel2.6.18_release/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=$LIB_BASE/myVTK/lib/vtk-5.4/:$LD_LIBRARY_PATH
-export PATH=$HOME/usr/torc/bin:$PATH
-export LD_LIBRARY_PATH=$HOME/usr/torc/bin:$LD_LIBRARY_PATH
-export PATH=$PATH:$LIB_BASE/mpich-install/bin/
-export LD_LIBRARY_PATH=$LIB_BASE/mpich-install/lib/:$LD_LIBRARY_PATH
-export LD_LIBRARY_PATH=/lrz/sys/tools/intel-mpi-wrappers/bin/mpicc:$LD_LIBRARY_PATH
-
 echo "Using this mpicc:"
 which mpicc
 

@@ -57,8 +57,8 @@ if [ $p -eq 1 ]; then
 	echo ">>> Ploting Posterior PDF manifold  <<<"
 	echo "---------------------------------------"
         InputFile=Input.txt
-        SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
-        MatlabTools="${SolverPath}/tools/UQ_Processing/Matlab/source/"
+        SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}') #return value includes terminating "/" of the path
+        MatlabTools="${SolverPath}tools/UQ_Processing/Matlab/source/"
         MyBase=$(pwd)
         InputPosterior="${MyBase}/posterior.txt"
 
@@ -128,12 +128,12 @@ EOF
         echo "---------------------------------------------"
         echo ">>> Converting MAP.dat to nii + visualise <<<"
         echo "---------------------------------------------"
-	SolverPath=$(cat ../${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
+	SolverPath=$(cat ../${InputFile} | awk -F '=' '/^SolverPath/ {print $2}') #return value includes terminating "/" of the path
         MatlabTools="${SolverPath}tools/DataProcessing/source"
 
-	InputNiiPath=$(  cat ../$InputFile | awk -F '=' '/^DataPath/ {print $2}')
+	InputNiiPath=$(  cat ../$InputFile | awk -F '=' '/^DataPath/ {print $2}') #return value includes terminating "/" of the path
 	InputNiiFileName=$( ls "${InputNiiPath}" | awk '/\.nii$|\.nii.gz$/ {print $0}' | head -1)
-	InputNiiData="${InputNiiPath}/${InputNiiFileName}"        	
+	InputNiiData="${InputNiiPath}${InputNiiFileName}"        	
 	MyBase=$(pwd)
 	InputDatData="${MyBase}"/MAP.dat
 
@@ -149,7 +149,7 @@ EOF
         echo "---------------------------------------"
 	VisFolder=Vis
 	mkdir "${VisFolder}"
-	cp "${InputNiiPath}"/* 	"${VisFolder}"
+	cp "${InputNiiPath}"* 	"${VisFolder}"
 	cp MAP.nii "${VisFolder}"
 	InputNiftyData=${MyBase}/${VisFolder}
 	
