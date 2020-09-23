@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ $LRZ_SYSTEM_SEGMENT != "" ]
+then
+    module load matlab
+fi
+
 #  Helpers
 #-----------------------------------------------------
 function last_column_max_row() {
@@ -35,6 +40,18 @@ Nparam=$(head -1 $(ls curgen_db_0* | tail -1) | awk '{print NF-1}')
 p=$(awk -v rec=$Ngen 'NR==(rec+1005){res=$0}END{printf "%d", res} ' runinfo.txt)
 
 
+#Input.txt
+InputFile=../Input.txt
+
+SolverPath=$(  cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
+InputDataDir=$(cat ${InputFile} | awk -F '=' '/^DataPath/ {print $2}')
+Nsamples=$(    cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
+
+#remove terminating "/" if existing
+SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)			
+InputDataDir=$(dirname $InputDataDir)"/"$(basename $InputDataDir)
+
+
 if [ $p -eq 1 ]; then
 	
 	echo " "
@@ -54,9 +71,8 @@ if [ $p -eq 1 ]; then
 	echo "---------------------------------------"
 	echo ">>> Ploting Posterior PDF manifold  <<<"
 	echo "---------------------------------------"
-        InputFile=Input.txt
-        SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')		#return value includes terminating "/" of the path
-        MatlabTools="${SolverPath}tools/UQ_Processing/Matlab/source/"
+        
+		MatlabTools="${SolverPath}/tools/UQ_Processing/Matlab/source/"
         MyBase=$(pwd)
         InputPosterior="${MyBase}/posterior.txt"
 
@@ -123,15 +139,13 @@ EOF
 	mv *vtu Paraview/
 	
 	echo " "
-        echo "---------------------------------------------"
-        echo ">>> Converting MAP.dat to nii + visualise <<<"
-        echo "---------------------------------------------"
-	SolverPath=$(cat ../${InputFile} | awk -F '=' '/^SolverPath/ {print $2}') #return value includes terminating "/" of the path
-        MatlabTools="${SolverPath}tools/DataProcessing/source"
+    echo "---------------------------------------------"
+    echo ">>> Converting MAP.dat to nii + visualise <<<"
+    echo "---------------------------------------------"
+	MatlabTools="${SolverPath}tools/DataProcessing/source"
 
-	InputNiiPath=$(  cat ../$InputFile | awk -F '=' '/^DataPath/ {print $2}') #return value includes terminating "/" of the path
-	InputNiiFileName=$( ls "${InputNiiPath}" | awk '/\.nii$|\.nii.gz$/ {print $0}' | head -1)
-	InputNiiData="${InputNiiPath}${InputNiiFileName}"        	
+	InputNiiFileName=$( ls "${InputDataDir}" | awk '/\.nii$|\.nii.gz$/ {print $0}' | head -1)
+	InputNiiData="${InputDataDir}/${InputNiiFileName}"        	
 	MyBase=$(pwd)
 	InputDatData="${MyBase}"/MAP.dat
 
@@ -147,7 +161,7 @@ EOF
         echo "---------------------------------------"
 	VisFolder=Vis
 	mkdir "${VisFolder}"
-	cp "${InputNiiPath}"* 	"${VisFolder}"
+	cp "${InputDataDir}"/* 	"${VisFolder}"
 	cp MAP.nii "${VisFolder}"
 	InputNiftyData=${MyBase}/${VisFolder}
 	
@@ -169,7 +183,8 @@ EOF
         echo "---------------------------------------"
         echo ">>>   Creating the Results folders  <<<"
         echo "---------------------------------------"
-	ResultsFolder=${InputNiiPath:0:-1}_Results
+	ResultsFolder=${InputDataDir}_Results
+	rm -r -f ${ResultsFolder}		#old results will be removed!!
 	mkdir -p ${ResultsFolder} 
 	cp ReportFile.md ${ResultsFolder} 
 	cp MAP/MAP.nii ${ResultsFolder}
@@ -182,12 +197,9 @@ EOF
 	cp statistics.txt ${DetailsFolder}
 	
 	# Fill in the ReportFile.pdf
-        InputDataDir=$(  cat ../$InputFile | awk -F '=' '/^DataPath/ {print $2}')
-        Nsamples=$(  cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
-
-        cd "${ResultsFolder}"
-        sed -i 's|INPUT_DATA_FOLDER|'"${InputDataDir}"'|g' ReportFile.md
-        sed -i 's|NUMBER_OF_SAMPLES|'"$Nsamples"'|g' ReportFile.md
+    cd "${ResultsFolder}"
+    sed -i 's|INPUT_DATA_FOLDER|'"${InputDataDir}"'|g' ReportFile.md
+    sed -i 's|NUMBER_OF_SAMPLES|'"$Nsamples"'|g' ReportFile.md
 
 	for i in $(seq 1 ${Nparam}); do
 	    sed -i 's|_MAP_p'"${i}"'_|'"${map[${i}]}"'|g' ReportFile.md
@@ -195,7 +207,14 @@ EOF
 	    sed -i 's|_std_p'"${i}"'_|'"${std[${i}]}"'|g' ReportFile.md
 	done
 
-	pandoc ReportFile.md -o ReportFile.pdf
+	if [ $LRZ_SYSTEM_SEGMENT != "" ]
+	then
+		#pandpandoc ReportFile.md -o ReportFile.pdf	#TODO: currecntly no easy way to get pandoc on LRZ cluster
+		echo "pandoc ReportFile.md -o ReportFile.pdf" > runLocal.sh	#create file that has to be executed on a system with pandoc
+		chmod +x runLocal.sh										#TODO: remove this workaround wehen better solution is found
+	else
+		pandoc ReportFile.md -o ReportFile.pdf
+	fi
 	cd ../
 	
 	echo " The Results are stored in:"

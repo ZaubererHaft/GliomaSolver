@@ -15,19 +15,22 @@ DataPath=$(  cat ${InputFile} | awk -F '=' '/^DataPath/ {print $2}')
 SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
 Nsamples=$(  cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
 
+#remove terminating "/" if existing
+SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)				
+DataPath=$(dirname $DataPath)"/"$(basename $DataPath)	    
+
+
 echo ">>> Converting Input data nii2dat <<<"
 echo "---------------------------------------"
-MatlabTools="${SolverPath}tools/DataProcessing/source"
+MatlabTools="${SolverPath}/tools/DataProcessing/source"
 MyBase=$(pwd)
 cd "${MatlabTools}"
 bRotate=1
 bResize=1
-matlab -nodisplay -nojvm -nosplash -nodesktop -r "nii2dat('${DataPath}',${bRotate},${bResize}); exit"
+matlab -nodisplay -nojvm -nosplash -nodesktop -r "nii2dat('${DataPath}'/,${bRotate},${bResize}); exit"
 cd "$MyBase"
 
-InputDataLocation=$(dirname "${DataPath}")
-InputDataFolderName=$(basename "${DataPath}")
-MRAGInputData="${InputDataLocation}/${InputDataFolderName}_dat/"
+MRAGInputData=${DataPath}_dat/
 
 # Folders name
 PrepFolder=Preprocessing
