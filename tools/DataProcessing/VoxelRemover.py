@@ -1,4 +1,5 @@
 import SimpleITK as sitk
+import os.path
 import logging
 import sys
 
@@ -26,6 +27,24 @@ def debug_image_information(image):
     v = image.GetMetaData(k)
     logger.debug(f"{k} : {v}")
 
+#writes a backup image as the new image overwrites the original one
+def create_backup_if_necessary(image, original_image_path):
+  backup_path = ""
+  if original_image_path.endswith(".nii"):
+    backup_path = original_image_path.replace(".nii", "") + "_backup.nii"
+  elif original_image_path.endswith(".nii.gz"):
+    backup_path = original_image_path.replace(".nii.gz", "") + "_backup.nii.gz"
+  else:
+    backup_path = original_image_path + "_backup.nii.gz"
+    
+  logger.debug(f"check if backup is available on {backup_path}...")
+
+  if os.path.isfile(backup_path):
+    logger.info("backup already exists, skipping step")
+  else:
+    logger.info("no CSF backup found, creating one...")
+    write_image(image, backup_path)
+
 #simple implementation to remove overlapping voxels of two nii images
 def remove_spatially_overlapping_voxels(csf_image, flair_image):
   for x in range(flair_image.GetSize()[0]):
@@ -36,32 +55,38 @@ def remove_spatially_overlapping_voxels(csf_image, flair_image):
         csf_pixel = csf_image[x,y,z]
         
         if flair_pixel > 0 and csf_pixel > 0:
-          logger.debug(f"found overlap at ({x},{y},{z}) because pixel value at flair is {flair_pixel} and at csf is {csf_pixel}")
+          logger.debug(f"found overlap at ({x},{y},{z}) because pixel value at FLAIR is {flair_pixel} and at CSF is {csf_pixel}")
           csf_image[x,y,z] = 0
 
   return csf_image
 
+
 #main routine structuring process
 def main():
-  logger.info("starting voxel deletion...")
+  logger.info("starting voxel removal...")
 
-  if len(sys.argv) <= 3:
-      logger.error("Missing argument; 1: flair image, 2: csf image, 3: output file")
+  if len(sys.argv) <= 2:
+      logger.error("Missing argument; 1: FLAIR image, 2: CSF image, 3: output file")
       quit()
 
-  logger.info(f"reading FLAIR image {sys.argv[1]}...")
-  flair_image = read_image(sys.argv[1])
+  flair_image_path = sys.argv[1]
+  csf_image_path = sys.argv[2]
+
+  logger.info(f"reading FLAIR image {flair_image_path}...")
+  flair_image = read_image(flair_image_path)
   debug_image_information(flair_image)
 
-  logger.info(f"reading CSF image {sys.argv[2]}...")
-  csf_image = read_image(sys.argv[2])
+  logger.info(f"reading CSF image {csf_image_path}...")
+  csf_image = read_image(csf_image_path)
   debug_image_information(csf_image)
+
+  create_backup_if_necessary(csf_image, csf_image_path)
 
   logger.info("remove overlapping voxels in CSF image...")
   non_overlapping_csf_image = remove_spatially_overlapping_voxels(csf_image, flair_image)
 
-  logger.info(f"writing CSF image to {sys.argv[3]}...")
-  write_image(non_overlapping_csf_image, sys.argv[3])
+  logger.info(f"overwrite CSF image at {csf_image_path}...")
+  write_image(non_overlapping_csf_image, csf_image_path)
 
   logger.info("done")
 
