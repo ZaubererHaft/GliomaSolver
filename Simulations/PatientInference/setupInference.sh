@@ -27,7 +27,7 @@ MyBase=$(pwd)
 cd "${MatlabTools}"
 bRotate=1
 bResize=1
-matlab -nodisplay -nojvm -nosplash -nodesktop -r "nii2dat('${DataPath}'/,${bRotate},${bResize}); exit"
+matlab -nodisplay -nojvm -nosplash -nodesktop -r "nii2dat('${DataPath}/',${bRotate},${bResize}); exit"
 cd "$MyBase"
 
 MRAGInputData=${DataPath}_dat/
