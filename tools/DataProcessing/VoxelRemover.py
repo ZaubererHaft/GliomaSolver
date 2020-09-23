@@ -3,7 +3,7 @@ import os.path
 import logging
 import sys
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 #Reads a nifti file with the given filename
@@ -47,6 +47,9 @@ def create_backup_if_necessary(image, original_image_path):
 
 #simple implementation to remove overlapping voxels of two nii images
 def remove_spatially_overlapping_voxels(csf_image, flair_image):
+
+  removed = 0
+
   for x in range(flair_image.GetSize()[0]):
     for y in range(flair_image.GetSize()[1]):
       for z in range(flair_image.GetSize()[2]):
@@ -57,7 +60,9 @@ def remove_spatially_overlapping_voxels(csf_image, flair_image):
         if flair_pixel > 0 and csf_pixel > 0:
           logger.debug(f"found overlap at ({x},{y},{z}) because pixel value at FLAIR is {flair_pixel} and at CSF is {csf_pixel}")
           csf_image[x,y,z] = 0
+          removed += 1
 
+  logger.info(f"removed {removed} overlapping voxels")
   return csf_image
 
 
