@@ -41,6 +41,13 @@ cp -r "$SolverPath/tools/scripts" .
 
 echo " "
 echo "---------------------------------------"
+echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
+echo "---------------------------------------"
+python3 "${SolverPath}tools/DataProcessing/VoxelRemover.py" "${DataPath}Tum_FLAIR.nii.gz" "${DataPath}CSF.nii.gz"
+
+
+echo " "
+echo "---------------------------------------"
 echo ">>> Data Preprocessing <<<"
 echo "---------------------------------------"
 # Map data to MRAG grid
