@@ -142,7 +142,7 @@ EOF
     echo "---------------------------------------------"
     echo ">>> Converting MAP.dat to nii + visualise <<<"
     echo "---------------------------------------------"
-	MatlabTools="${SolverPath}tools/DataProcessing/source"
+	MatlabTools="${SolverPath}/tools/DataProcessing/source"
 
 	InputNiiFileName=$( ls "${InputDataDir}" | awk '/\.nii$|\.nii.gz$/ {print $0}' | head -1)
 	InputNiiData="${InputDataDir}/${InputNiiFileName}"        	
