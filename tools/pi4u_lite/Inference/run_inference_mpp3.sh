@@ -56,4 +56,4 @@ mpirun -env TORC_WORKERS 1 ./engine_tmcmc
 #mpirun -np 64 -env TORC_WORKERS 1 ./engine_tmcmc
 
 
-./extractInferenceOutput_LRZ.sh
+./extractInferenceOutput.sh
