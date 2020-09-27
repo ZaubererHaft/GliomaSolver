@@ -24,7 +24,7 @@ adaptive=1
 vtk=0
 UQ=1
 dumpfreq=20
-PatFileName="${InputFile}/"
+PatFileName="${InputFile}"
 
 ./\$program -nthreads \$N -model \$model -verbose \$verbose -adaptive \$adaptive -PatFileName \$PatFileName -vtk \$vtk -dumpfreq \$dumpfreq -UQ \$UQ
 
