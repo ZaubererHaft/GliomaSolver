@@ -19,6 +19,13 @@ Nsamples=$(  cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
 SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)				
 DataPath=$(dirname $DataPath)"/"$(basename $DataPath)	    
 
+#remove overlap before conversion to dat
+echo " "
+echo "---------------------------------------"
+echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
+echo "---------------------------------------"
+python3 "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}Tum_FLAIR.nii.gz" "${DataPath}CSF.nii.gz"
+
 
 echo ">>> Converting Input data nii2dat <<<"
 echo "---------------------------------------"
@@ -41,12 +48,6 @@ LIKELIHOOD=Inference/Likelihood/makefile/
 # Get Inference tools and scripts
 cp -r "$SolverPath/tools/pi4u_lite/Inference" .
 cp -r "$SolverPath/tools/scripts" . 
-
-echo " "
-echo "---------------------------------------"
-echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
-echo "---------------------------------------"
-python3 "${SolverPath}tools/DataProcessing/VoxelRemover.py" "${DataPath}Tum_FLAIR.nii.gz" "${DataPath}CSF.nii.gz"
 
 
 echo " "
