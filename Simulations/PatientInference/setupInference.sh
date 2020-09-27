@@ -24,7 +24,7 @@ echo " "
 echo "---------------------------------------"
 echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
 echo "---------------------------------------"
-python3 "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}Tum_FLAIR.nii.gz" "${DataPath}CSF.nii.gz"
+python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/Tum_FLAIR.nii.gz" "${DataPath}/CSF.nii.gz"
 
 
 echo ">>> Converting Input data nii2dat <<<"
