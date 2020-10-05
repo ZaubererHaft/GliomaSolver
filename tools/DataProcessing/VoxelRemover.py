@@ -6,29 +6,37 @@ import sys
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-#Reads a nifti file with the given filename
 def read_image(fileName):
+  """
+  Reads a nifti file with the given filename
+  """
   reader = sitk.ImageFileReader()
   reader.SetImageIO("NiftiImageIO")
   reader.SetFileName(fileName)
 
   return reader.Execute()
 
-#writes a nifti image to the specified output path
 def write_image(image, output_path):
+  """
+  Writes a nifti image to the specified output path
+  """
   writer = sitk.ImageFileWriter()
   writer.SetFileName(output_path)
   writer.SetImageIO("NiftiImageIO")
   writer.Execute(image)
 
-#debugs image information
 def debug_image_information(image):
+  """
+  Debugs image information, more specific: header data of the nifti image
+  """
   for k in image.GetMetaDataKeys():
     v = image.GetMetaData(k)
     logger.debug(f"{k} : {v}")
 
-#writes a backup image as the new image overwrites the original one
 def create_backup_if_necessary(image, original_image_path):
+  """
+  Writes a backup image as the new image overwrites the original one
+  """
   backup_path = ""
   if original_image_path.endswith(".nii"):
     backup_path = original_image_path.replace(".nii", "") + "_backup.nii"
@@ -45,9 +53,10 @@ def create_backup_if_necessary(image, original_image_path):
     logger.info("no CSF backup found, creating one...")
     write_image(image, backup_path)
 
-#simple implementation to remove overlapping voxels of two nii images
 def remove_spatially_overlapping_voxels(csf_image, flair_image):
-
+  """
+  Simple implementation to remove overlapping voxels of two nii images
+  """
   removed = 0
 
   for x in range(flair_image.GetSize()[0]):
@@ -65,9 +74,10 @@ def remove_spatially_overlapping_voxels(csf_image, flair_image):
   logger.info(f"removed {removed} overlapping voxels")
   return csf_image
 
-
-#main routine structuring process
 def main():
+  """
+  Main routine structuring process
+  """
   logger.info("starting voxel removal...")
 
   if len(sys.argv) <= 2:
