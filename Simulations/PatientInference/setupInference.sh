@@ -24,6 +24,14 @@ echo " "
 echo "---------------------------------------"
 echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
 echo "---------------------------------------"
+if [ $LRZ_SYSTEM_SEGMENT != "" ]
+then
+    echo "setting up python environment..."
+    module load python
+    conda create -n py38 python=3.8
+    source activate py38
+    conda install -c simpleitk simpleitk
+fi
 python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/Tum_FLAIR.nii.gz" "${DataPath}/CSF.nii.gz"
 
 
