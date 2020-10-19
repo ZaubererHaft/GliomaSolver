@@ -95,7 +95,8 @@ def main():
   csf_image = read_image(csf_image_path)
   debug_image_information(csf_image)
 
-  create_backup_if_necessary(csf_image, csf_image_path)
+  #backup only for testing purposes
+  #create_backup_if_necessary(csf_image, csf_image_path)
 
   logger.info("remove overlapping voxels in CSF image...")
   non_overlapping_csf_image = remove_spatially_overlapping_voxels(csf_image, flair_image)
