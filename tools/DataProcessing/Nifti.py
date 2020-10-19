@@ -42,6 +42,9 @@ def extract_labels_to_new_image (image, targets):
  return img_corr
 
 def keep_overlapping_voxels(image_a, image_b):
+  """
+  Compares two images and uses image b as a blend mask.
+  """
   kept = 0
 
   for x in range(image_b.GetSize()[0]):

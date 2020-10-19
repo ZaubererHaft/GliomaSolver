@@ -15,7 +15,9 @@ def main():
     logger.error("Missing argument; 1: Base Path to patient folder")
     quit()
 
+ global base_path
  base_path = sys.argv[1]
+ 
  seg_file = base_path + "brats_seg" + prefix
  fet_file = base_path + "brats_fet" + prefix
 
