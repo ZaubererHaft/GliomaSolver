@@ -14,6 +14,13 @@ def main():
 
  ni.write_image(tum_flair, "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/tum_flair.nii.gz") 
  ni.write_image(tum_c1, "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/tum_c1.nii.gz") 
+
+ img = ni.read_image("/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/brats_fet.nii.gz")
+ tum_fet = ni.keep_overlapping_voxels(img, tum_c1)
+ ni.write_image(tum_fet, "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/tum_fet.nii.gz") 
+
+ #ToDo: rename
+
  return
 
 if __name__ == "__main__":

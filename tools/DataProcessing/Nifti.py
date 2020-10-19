@@ -41,6 +41,46 @@ def extract_labels_to_new_image (image, targets):
 
  return img_corr
 
+def keep_overlapping_voxels(image_a, image_b):
+  kept = 0
+
+  for x in range(image_b.GetSize()[0]):
+    for y in range(image_b.GetSize()[1]):
+      for z in range(image_b.GetSize()[2]):
+
+        pixel_b = image_b[x,y,z]
+        pixel_a = image_a[x,y,z]
+        
+        if pixel_b <= 0 or pixel_a <= 0:
+          image_a[x,y,z] = 0
+        else:
+          kept += 1
+          logger.debug(f"keep voxel at ({x},{y},{z}) because pixel value at A is {pixel_a} and at B is {pixel_b}")
+
+  logger.info(f"kept {kept} unmatching voxels")
+  return image_a
+
+def remove_spatially_overlapping_voxels(image_a, image_b):
+  """
+  Removes all voxels at A if they are set set and at there is a non empty voxel at B at the same index.
+  """
+  removed = 0
+
+  for x in range(image_b.GetSize()[0]):
+    for y in range(image_b.GetSize()[1]):
+      for z in range(image_b.GetSize()[2]):
+
+        pixel_b = image_b[x,y,z]
+        pixel_a = image_a[x,y,z]
+        
+        if pixel_b > 0 and pixel_a > 0:
+          logger.debug(f"found overlap at ({x},{y},{z}) because pixel value at A is {pixel_a} and at B is {pixel_b}")
+          image_a[x,y,z] = 0
+          removed += 1
+
+  logger.info(f"removed {removed} overlapping voxels")
+  return image_a
+
 def debug_image_information(image):
   """
   Debugs image information, more specific: header data of the nifti image

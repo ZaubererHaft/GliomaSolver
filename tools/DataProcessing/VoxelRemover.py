@@ -5,27 +5,6 @@ import sys
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-def remove_spatially_overlapping_voxels(csf_image, flair_image):
-  """
-  Simple implementation to remove overlapping voxels of two nii images
-  """
-  removed = 0
-
-  for x in range(flair_image.GetSize()[0]):
-    for y in range(flair_image.GetSize()[1]):
-      for z in range(flair_image.GetSize()[2]):
-
-        flair_pixel = flair_image[x,y,z]
-        csf_pixel = csf_image[x,y,z]
-        
-        if flair_pixel > 0 and csf_pixel > 0:
-          logger.debug(f"found overlap at ({x},{y},{z}) because pixel value at FLAIR is {flair_pixel} and at CSF is {csf_pixel}")
-          csf_image[x,y,z] = 0
-          removed += 1
-
-  logger.info(f"removed {removed} overlapping voxels")
-  return csf_image
-
 def main():
   """
   Main routine structuring process
@@ -51,7 +30,7 @@ def main():
   #ni.create_backup_if_necessary(csf_image, csf_image_path)
 
   logger.info("remove overlapping voxels in CSF image...")
-  non_overlapping_csf_image = remove_spatially_overlapping_voxels(csf_image, flair_image)
+  non_overlapping_csf_image = ni.remove_spatially_overlapping_voxels(csf_image, flair_image)
 
   logger.info(f"overwrite CSF image at {csf_image_path}...")
   ni.write_image(non_overlapping_csf_image, csf_image_path)
