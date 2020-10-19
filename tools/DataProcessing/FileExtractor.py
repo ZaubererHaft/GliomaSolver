@@ -17,7 +17,7 @@ def main():
 
  global base_path
  base_path = sys.argv[1]
- 
+
  seg_file = base_path + "brats_seg" + prefix
  fet_file = base_path + "brats_fet" + prefix
 
@@ -40,8 +40,8 @@ def main():
  logger.info(f"renaming tissue files...")
  rename("brats_fet", "FET")
  rename("brats_fla", "FLAIR")
- rename("brats_t1c", "CSF")
- rename("brats_t1c_csf", "T1c")
+ rename("brats_t1c", "T1c")
+ rename("brats_t1c_csf", "CSF")
  rename("brats_t1c_gm", "GM")
  rename("brats_t1c_wm", "WM")
 
