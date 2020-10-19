@@ -7,10 +7,15 @@ import os.path
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-base_path = "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/"
+base_path = ""
 prefix = ".nii.gz"
 
 def main():
+ if len(sys.argv) <= 1:
+    logger.error("Missing argument; 1: Base Path to patient folder")
+    quit()
+
+ base_path = sys.argv[1]
  seg_file = base_path + "brats_seg" + prefix
  fet_file = base_path + "brats_fet" + prefix
 
