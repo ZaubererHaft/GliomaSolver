@@ -1,4 +1,5 @@
 import SimpleITK as sitk
+import numpy as np
 import logging
 import os.path
 
@@ -22,6 +23,23 @@ def write_image(image, output_path):
   writer.SetFileName(output_path)
   writer.SetImageIO("NiftiImageIO")
   writer.Execute(image)
+
+def extract_labels_to_new_image (image, targets):
+ """
+ Extracts one to many labels and stores it into a new image.
+ """
+ img_npy = sitk.GetArrayFromImage(image)
+ uniques = np.unique(img_npy)
+ seg_new = np.zeros_like(img_npy)
+
+ for i in range(len(targets)):
+    (src_label,target_label) = targets[i] 
+    seg_new[img_npy == src_label] = target_label
+
+ img_corr = sitk.GetImageFromArray(seg_new)
+ img_corr.CopyInformation(image)
+
+ return img_corr
 
 def debug_image_information(image):
   """
