@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 echo "------------------------------------------------------"
 echo "          SETTING-UP INFERENCE ENVIROMENT             "
 echo "------------------------------------------------------"
@@ -8,6 +7,13 @@ echo "------------------------------------------------------"
 if [ $LRZ_SYSTEM_SEGMENT != "" ]
 then
     module load matlab
+
+    echo "setting up python environment..."
+    module load python
+    conda create -n py38 python=3.8
+    source activate py38
+    conda install -c anaconda numpy
+    conda install -c simpleitk simpleitk
 fi
 
 InputFile=Input.txt
@@ -19,22 +25,22 @@ Nsamples=$(  cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
 SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)				
 DataPath=$(dirname $DataPath)"/"$(basename $DataPath)	    
 
+#prepare data 
+read -r -p "Need to extract segmentations from BRATS and rename ? [y/N] " prompt
+if [[ $prompt =~ [yY]* ]]
+then
+    python "${SolverPath}/tools/DataProcessing/FileExtractor.py" "${DataPath}/" 
+fi
+
 #remove overlap before conversion to dat
 echo " "
 echo "---------------------------------------"
 echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
 echo "---------------------------------------"
-if [ $LRZ_SYSTEM_SEGMENT != "" ]
-then
-    echo "setting up python environment..."
-    module load python
-    conda create -n py38 python=3.8
-    source activate py38
-    conda install -c simpleitk simpleitk
-fi
 python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/Tum_FLAIR.nii.gz" "${DataPath}/CSF.nii.gz"
 
-
+echo " "
+echo "---------------------------------------"
 echo ">>> Converting Input data nii2dat <<<"
 echo "---------------------------------------"
 MatlabTools="${SolverPath}/tools/DataProcessing/source"
