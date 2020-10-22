@@ -13,4 +13,4 @@ SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
 SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)				
 DataPath=$(dirname $DataPath)"/"$(basename $DataPath)	 
 
-python3 "${SolverPath}/tools/DataProcessing/FileExtractor.py" "${DataPath}/" 
+python "${SolverPath}/tools/DataProcessing/FileExtractor.py" "${DataPath}/" 
