@@ -7,17 +7,11 @@ echo "------------------------------------------------------"
 if [ $LRZ_SYSTEM_SEGMENT != "" ]
 then
     module load matlab
-    ./setupPython.sh
+    source ./setupPython.sh
 fi
 
-InputFile=Input.txt
-DataPath=$(  cat ${InputFile} | awk -F '=' '/^DataPath/ {print $2}')
-SolverPath=$(cat ${InputFile} | awk -F '=' '/^SolverPath/ {print $2}')
-Nsamples=$(  cat ${InputFile} | awk -F '=' '/^Nsamples/ {print $2}')
-
-#remove terminating "/" if existing
-SolverPath=$(dirname $SolverPath)"/"$(basename $SolverPath)				
-DataPath=$(dirname $DataPath)"/"$(basename $DataPath)	    
+#reads the input variables used within this script
+source ./readInputVariables.sh
 
 #remove overlap before conversion to dat
 echo " "
