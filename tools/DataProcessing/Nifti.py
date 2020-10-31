@@ -87,11 +87,11 @@ def remove_spatially_overlapping_voxels(image_a, image_b):
 
 def clear_background_intensity(image):
   """
-  Sets the background voxel relativ to the top left voxel to zero
+  Sets the voxels relativ to the top left voxel (0,0,0) to zero
   """
   voxel = image[0,0,0]
 
-  logger.info("clear background voxel insities...")
+  logger.info("clear background voxel intensities...")
   for x in range(image.GetSize()[0]):
     for y in range(image.GetSize()[1]):
       for z in range(image.GetSize()[2]):
