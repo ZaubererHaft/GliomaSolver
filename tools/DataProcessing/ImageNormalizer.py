@@ -15,10 +15,10 @@ def main():
     prefix = ".nii.gz"
     base_path = sys.argv[1]
 
-    logger.info("normalize FET image...")
-    img = ni.read_image(f"{base_path}FET{prefix}")
+    logger.info("normalize Tum_FET image...")
+    img = ni.read_image(f"{base_path}Tum_FET{prefix}")
     img = ni.normalize_image(img)
-    ni.write_image(img, f"{base_path}FET{prefix}")
+    ni.write_image(img, f"{base_path}Tum_FET{prefix}")
 
     logger.info("remove background intensity of WM...")
     img = ni.read_image(f"{base_path}WM{prefix}")
