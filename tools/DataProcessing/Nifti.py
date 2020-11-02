@@ -18,29 +18,36 @@ def read_image(fileName):
 
 def write_image(image, output_path):
   """
-  Writes a nifti image to the specified output path
+  Writes a nifti image to the specified output path.
   """
   writer = sitk.ImageFileWriter()
   writer.SetFileName(output_path)
   writer.SetImageIO("NiftiImageIO")
+  image = correct_xyz_units_if_necessary(image)
   writer.Execute(image)
 
-def extract_labels_to_new_image (image, targets):
- """
- Extracts one to many labels and stores it into a new image.
- """
- img_npy = sitk.GetArrayFromImage(image)
- uniques = np.unique(img_npy)
- seg_new = np.zeros_like(img_npy)
+def create_image(array, image_information):
+  """
+  Creates an image with an array and a parent image to get all transfrom information.
+  """
+  img_corr = sitk.GetImageFromArray(array)
+  img_corr.CopyInformation(image_information)
+  img_corr = set_xyz_units(img_corr, "2")
+  return img_corr
 
- for i in range(len(targets)):
+def extract_labels_to_new_image (image, targets):
+  """
+  Extracts one to many labels and stores it into a new image.
+  """
+  img_npy = sitk.GetArrayFromImage(image)
+  uniques = np.unique(img_npy)
+  seg_new = np.zeros_like(img_npy)
+
+  for i in range(len(targets)):
     (src_label,target_label) = targets[i] 
     seg_new[img_npy == src_label] = target_label
 
- img_corr = sitk.GetImageFromArray(seg_new)
- img_corr.CopyInformation(image)
-
- return img_corr
+  return create_image(seg_new, image)
 
 def keep_overlapping_voxels(image_a, image_b):
   """
@@ -119,13 +126,20 @@ def normalize_image(image):
 
   scaler = MinMaxScaler()
   scaler = scaler.fit(img_npy)
-  img_npy= scaler.transform(img_npy)
-
+  img_npy = scaler.transform(img_npy)
   img_npy = img_npy.reshape((z, y, x))
 
-  img_corr = sitk.GetImageFromArray(img_npy)
-  img_corr.CopyInformation(image)
-  return img_corr
+  return create_image(img_npy, image)
+
+def correct_xyz_units_if_necessary(image):
+  if not image.HasMetaDataKey("xyzt_units"):
+    logger.warning(f"xyzt_tag is not set correcting to 2")
+    image = set_xyz_units(image, "2")
+  return image
+
+def set_xyz_units(image, value):
+  image.SetMetaData('xyzt_units', value)
+  return image
 
 def debug_image_information(image):
   """
@@ -133,7 +147,9 @@ def debug_image_information(image):
   """
   for k in image.GetMetaDataKeys():
     v = image.GetMetaData(k)
-    logger.debug(f"{k} : {v}")
+
+    if "xyz" in k:
+      logger.debug(f"{k} : {v}")
 
 def create_backup_if_necessary(image, original_image_path):
   """
