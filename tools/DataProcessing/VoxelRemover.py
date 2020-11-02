@@ -11,23 +11,22 @@ def main():
   """
   logger.info("starting voxel removal...")
 
-  if len(sys.argv) <= 2:
-      logger.error("Missing argument; 1: FLAIR image, 2: CSF image, 3: output file")
+  if len(sys.argv) <= 1:
+      logger.error("Missing argument; 1: base path")
       quit()
 
-  flair_image_path = sys.argv[1]
-  csf_image_path = sys.argv[2]
+  base_path = sys.argv[1]
+  
+  flair_image_path = base_path + "Tum_FLAIR.nii.gz"
+  csf_image_path = base_path + "CSF.nii.gz"
 
-  logger.info(f"reading FLAIR image {flair_image_path}...")
-  flair_image = ni.read_image(flair_image_path)
+  logger.info(f"reading Tum_FLAIR image...")
+  flair_image = ni.read_image(f"{flair_image_path}")
   ni.debug_image_information(flair_image)
 
-  logger.info(f"reading CSF image {csf_image_path}...")
+  logger.info(f"reading CSF image...")
   csf_image = ni.read_image(csf_image_path)
   ni.debug_image_information(csf_image)
-
-  #backup only for testing purposes
-  #ni.create_backup_if_necessary(csf_image, csf_image_path)
 
   logger.info("remove overlapping voxels in CSF image...")
   non_overlapping_csf_image = ni.remove_spatially_overlapping_voxels(csf_image, flair_image)

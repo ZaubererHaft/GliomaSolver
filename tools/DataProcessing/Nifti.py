@@ -23,7 +23,6 @@ def write_image(image, output_path):
   writer = sitk.ImageFileWriter()
   writer.SetFileName(output_path)
   writer.SetImageIO("NiftiImageIO")
-  image = correct_xyz_units_if_necessary(image)
   writer.Execute(image)
 
 def create_image(array, image_information):
@@ -99,6 +98,7 @@ def clear_background_intensity(image):
   voxel = image[0,0,0]
 
   logger.info("clear background voxel intensities...")
+  
   for x in range(image.GetSize()[0]):
     for y in range(image.GetSize()[1]):
       for z in range(image.GetSize()[2]):
@@ -133,8 +133,10 @@ def normalize_image(image):
 
 def correct_xyz_units_if_necessary(image):
   if not image.HasMetaDataKey("xyzt_units"):
-    logger.warning(f"xyzt_tag is not set correcting to 2")
-    image = set_xyz_units(image, "2")
+    value = image.GetMetaData("xyzt_units")
+    if not value:
+      logger.warning(f"xyzt_tag is not set correcting to 2")
+      image = set_xyz_units(image, "2")
   return image
 
 def set_xyz_units(image, value):
@@ -147,9 +149,7 @@ def debug_image_information(image):
   """
   for k in image.GetMetaDataKeys():
     v = image.GetMetaData(k)
-
-    if "xyz" in k:
-      logger.debug(f"{k} : {v}")
+    logger.debug(f"{k} : {v}")
 
 def create_backup_if_necessary(image, original_image_path):
   """

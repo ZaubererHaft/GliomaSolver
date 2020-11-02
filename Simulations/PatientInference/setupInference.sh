@@ -7,18 +7,10 @@ echo "------------------------------------------------------"
 if [ $LRZ_SYSTEM_SEGMENT != "" ]
 then
     module load matlab
-    source ./setupPython.sh
 fi
 
 #reads the input variables used within this script
 source ./readInputVariables.sh
-
-#remove overlap before conversion to dat
-echo " "
-echo "---------------------------------------"
-echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
-echo "---------------------------------------"
-python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/Tum_FLAIR.nii.gz" "${DataPath}/CSF.nii.gz"
 
 echo " "
 echo "---------------------------------------"
