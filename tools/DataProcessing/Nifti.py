@@ -132,24 +132,30 @@ def normalize_image(image):
   return create_image(img_npy, image)
 
 def correct_xyz_units_if_necessary(image):
-  if not image.HasMetaDataKey("xyzt_units"):
+  value = None
+
+  if image.HasMetaDataKey("xyzt_units"):
     value = image.GetMetaData("xyzt_units")
-    if not value:
-      logger.warning(f"xyzt_tag is not set correcting to 2")
-      image = set_xyz_units(image, "2")
+
+  if not value or value != "\x02":
+    logger.warning(f"xyzt_tag is not set correcting to \x02")
+    image = set_xyz_units(image, "\x02")
+  else:
+    logger.info(f"xyzt_tag is set correctly to {value}")
+
   return image
 
 def set_xyz_units(image, value):
   image.SetMetaData('xyzt_units', value)
   return image
 
-def debug_image_information(image):
+def log_image_information(image):
   """
   Debugs image information, more specific: header data of the nifti image
   """
   for k in image.GetMetaDataKeys():
     v = image.GetMetaData(k)
-    logger.debug(f"{k} : {v}")
+    logger.info(f"{k} : {v}")
 
 def create_backup_if_necessary(image, original_image_path):
   """

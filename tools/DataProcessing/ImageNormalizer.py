@@ -33,6 +33,9 @@ def main():
             logger.info(f"check and correct meta data {component}...")
             img = ni.correct_xyz_units_if_necessary(img)
 
+            logger.info(f"normalizing complete:")
+            ni.log_image_information(img)
+
             ni.write_image(img, join)
 
     logger.info("done")
