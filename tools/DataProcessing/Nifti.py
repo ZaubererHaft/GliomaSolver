@@ -137,8 +137,11 @@ def correct_xyz_units_if_necessary(image):
   if image.HasMetaDataKey("xyzt_units"):
     value = image.GetMetaData("xyzt_units")
 
-  if not value or value != "\x02":
-    logger.warning(f"xyzt_tag is not set correcting to x02")
+  if not value:
+    logger.warning(f"xyzt_tag is not set, correcting to x02")
+    image = set_xyz_units(image, "\x02")
+  elif value != "\x02":
+    logger.warning(f"xyzt_tag has an illegal value ({value}), correcting to x02")
     image = set_xyz_units(image, "\x02")
   else:
     logger.info(f"xyzt_tag is set correctly to x02")
