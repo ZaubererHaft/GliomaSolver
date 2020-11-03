@@ -31,7 +31,7 @@ def create_image(array, image_information):
   """
   img_corr = sitk.GetImageFromArray(array)
   img_corr.CopyInformation(image_information)
-  img_corr = set_xyz_units(img_corr, "2")
+  img_corr = set_xyz_units(img_corr, "\x02")
   return img_corr
 
 def extract_labels_to_new_image (image, targets):
