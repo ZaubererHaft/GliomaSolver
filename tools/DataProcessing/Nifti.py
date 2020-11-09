@@ -1,8 +1,10 @@
+from logging import debug
 import SimpleITK as sitk
 import numpy as np
 import logging
 import os.path
 from sklearn.preprocessing import MinMaxScaler
+import medpy as med
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +134,9 @@ def normalize_image(image):
   return create_image(img_npy, image)
 
 def correct_xyz_units_if_necessary(image):
+  """
+  Corrects the xyzt flag if necessary to x02.
+  """
   value = None
 
   if image.HasMetaDataKey("xyzt_units"):
@@ -149,6 +154,9 @@ def correct_xyz_units_if_necessary(image):
   return image
 
 def set_xyz_units(image, value):
+  """
+  Sets tthe xyzt flag.
+  """
   image.SetMetaData('xyzt_units', value)
   return image
 
@@ -159,6 +167,39 @@ def log_image_information(image):
   for k in image.GetMetaDataKeys():
     v = image.GetMetaData(k)
     logger.info(f"{k} : {v}")
+
+def create_metadata_report(img_1, img_2):
+  """
+  Creates a triple containing the differences between the header files of the two images.
+  """
+  k1s = img_1.GetMetaDataKeys()
+  k2s = img_2.GetMetaDataKeys()
+
+  set_k1 = set(k1s)
+  set_k2 = set(k2s)
+
+  in_1_and_two = set_k1 & set_k2
+  only_in_1 = set_k1 - set_k2
+  only_in_2 = set_k2 - set_k1
+
+  l1 = []
+  l2 = []
+  l3 = []
+
+  for k in in_1_and_two:
+    val1 = img_1.GetMetaData(k)
+    val2 = img_2.GetMetaData(k)
+
+    if(val1 != val2):
+      l1.append((k, val1, val2))
+
+  for k in only_in_1:
+    l2.append((k, img_1.GetMetaData(k)))
+
+  for k in only_in_2:
+    l3.append((k, img_2.GetMetaData(k)))
+
+  return (l1, l2, l3)
 
 def create_backup_if_necessary(image, original_image_path):
   """

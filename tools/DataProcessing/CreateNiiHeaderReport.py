@@ -3,6 +3,9 @@ import Nifti as ni
 import logging
 import sys
 import os.path
+from medpy.io import load
+from medpy.io import save
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,7 +18,7 @@ def main():
 
     logger.info("starting header comparison...")
 
-    path_1 = "/home/ludwig/Repositories/Study/KAP/GliomaInput/19P_HavingResults/rec006_pre/" #sys.argv[1]
+    path_1 = "/home/ludwig/Repositories/Study/KAP/GliomaInput/19P_HavingResults/rec001_pre/" #sys.argv[1]
     path_2 = "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/" #sys.argv[2]
 
     for component in os.listdir(path_1):     
@@ -48,12 +51,11 @@ def main():
             if len(l1) + len(l2) +len(l3) <= 0:
                 logger.info("no meta data differ")
 
-            #img = ni.copy_meta_data(img_1, img_2)
-            #img_2 = ni.correct_xyz_units_if_necessary(img_2)
-            
             print("")
-            #ni.write_image(img, join_2)
+            d1, h1 = load(join_1)
+            d2, h2 = load(join_2)
 
+            save(d2, join_2, h1, force=True)
 
     logger.info("done")
 
