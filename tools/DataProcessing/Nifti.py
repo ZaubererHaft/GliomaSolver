@@ -4,7 +4,6 @@ import numpy as np
 import logging
 import os.path
 from sklearn.preprocessing import MinMaxScaler
-import medpy as med
 
 logger = logging.getLogger(__name__)
 
