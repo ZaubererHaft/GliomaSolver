@@ -5,7 +5,9 @@ import sys
 import os.path
 from medpy.io import load
 from medpy.io import save
+import numpy as np
 
+import nibabel as nib
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -52,10 +54,13 @@ def main():
                 logger.info("no meta data differ")
 
             print("")
-            d1, h1 = load(join_1)
-            d2, h2 = load(join_2)
+ 
+            img2 = nib.load(join_2)
+            img1 = nib.load(join_1)
 
-            save(d2, join_2, h1, force=True)
+            data = img2.get_fdata()
+            clipped_img = nib.Nifti1Image(data, img1.affine, img1.header)
+            nib.save(clipped_img, join_2)
 
     logger.info("done")
 
