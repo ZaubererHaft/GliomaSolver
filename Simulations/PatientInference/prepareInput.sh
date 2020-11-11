@@ -30,4 +30,4 @@ echo "---------------------------------------"
 echo ">>> Correct nifti header <<<"
 echo "---------------------------------------"
 #ToDo: parametrize correction path
-python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/../../correction/"  "${DataPath}/" 
+python "${SolverPath}/tools/DataProcessing/HeaderCorrection.py" "${DataPath}/../../correction/"  "${DataPath}/" 
