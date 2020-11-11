@@ -10,7 +10,7 @@ then
 fi
 
 #reads the input variables used within this script
-source ./readInputVariables.sh
+. ./readInputVariables.sh
 
 echo " "
 echo "---------------------------------------"

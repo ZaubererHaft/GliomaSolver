@@ -1,12 +1,7 @@
-from logging import log
 import Nifti as ni
 import logging
 import sys
 import os.path
-from medpy.io import load
-from medpy.io import save
-import numpy as np
-
 import nibabel as nib
 
 logging.basicConfig(level=logging.INFO)
@@ -14,19 +9,18 @@ logger = logging.getLogger(__name__)
 
 def main():
 
-   # if len(sys.argv) <= 2:
-   #    logger.error("Missing argument; 1: nifti path 1, 2: nifti path 2")
-   #    quit()
+    if len(sys.argv) <= 2:
+        logger.error("Missing argument; 1: template path 1, 2: correction path")
+        quit()
 
     logger.info("starting header comparison...")
 
-    path_1 = "/home/ludwig/Repositories/Study/KAP/GliomaInput/19P_HavingResults/rec001_pre/" #sys.argv[1]
-    path_2 = "/home/ludwig/Repositories/Study/KAP/GliomaInput/TGM_63patients/tgm001_preop/" #sys.argv[2]
+    path_1 = sys.argv[1]
+    path_2 = sys.argv[2]
 
     for component in os.listdir(path_1):     
         join_1 = f"{path_1}{component}"
         join_2 = f"{path_2}{component}"
-
 
         if os.path.isfile(join_1):
 

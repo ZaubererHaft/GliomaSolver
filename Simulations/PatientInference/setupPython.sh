@@ -7,4 +7,5 @@ source activate py38
 conda install -c anaconda numpy
 conda install -c simpleitk simpleitk
 conda install scikit-learn
+conda install -c conda-forge nibabel
 echo "done"

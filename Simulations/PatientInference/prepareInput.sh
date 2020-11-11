@@ -24,3 +24,10 @@ echo "---------------------------------------"
 echo ">>> Remove overlapping voxels in CSF/FLAIR image <<<"
 echo "---------------------------------------"
 python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/" 
+
+echo " "
+echo "---------------------------------------"
+echo ">>> Correct nifti header <<<"
+echo "---------------------------------------"
+#ToDo: parametrize correction path
+python "${SolverPath}/tools/DataProcessing/VoxelRemover.py" "${DataPath}/../../correction/"  "${DataPath}/" 
