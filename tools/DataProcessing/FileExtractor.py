@@ -49,7 +49,7 @@ def extract_and_write_flair_c1(segmentation_image):
  Extracts the Tum_FLAIR and Tum_C1 images and writes them to the disk.
  """
  tum_flair = ni.extract_labels_to_new_image(segmentation_image, [(1,1),(2,1),(4,1)])
- tum_c1 = ni.extract_labels_to_new_image(segmentation_image, [(1,1),(4,4)])
+ tum_c1 = ni.extract_labels_to_new_image(segmentation_image, [(1,4),(4,1)])
 
  ni.write_image(tum_flair, base_path + "Tum_FLAIR"  + prefix) 
  ni.write_image(tum_c1, base_path + "Tum_T1c"  + prefix) 
