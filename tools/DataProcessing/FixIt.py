@@ -3,6 +3,7 @@ import sys
 import os.path
 import nibabel as nib
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -56,8 +57,19 @@ def main():
                     fet_data[x,y,z] = 0
                 else:
                     kept += 1
-
     logger.info(f"kept {kept} unmatching voxels")
+
+    logger.info("normalize Tum_FET...")
+    x = fet_img.header.get_data_shape()[0]
+    y = fet_img.header.get_data_shape()[1]
+    z = fet_img.header.get_data_shape()[2]
+    fet_data = fet_data.reshape((x*y, z))
+
+    scaler = MinMaxScaler()
+    scaler = scaler.fit(fet_data)
+    fet_data = scaler.transform(fet_data)
+    fet_data = fet_data.reshape((x, y, z))
+
     clipped_img = nib.Nifti1Image(fet_data, reference_img.affine, reference_img.header)
     nib.save(clipped_img, path + "Tum_FET" + prefix)
     
@@ -87,10 +99,11 @@ def main():
             nib.save(clipped_img, join)
 
     
-    logger.info("remove voxels in CSF image overlapping with the Tum_FLAIR image")
+    logger.info("remove voxels in CSF image overlapping with the Tum_FLAIR image and clear intensity...")
 
     csf_img = nib.load(path + "CSF" + prefix)
     csf_data = csf_img.get_fdata()
+    csf_voxel = csf_data[0,0,0]
 
     removed = 0
     for x in range(csf_img.header.get_data_shape()[0]):
@@ -99,8 +112,10 @@ def main():
 
                 pixel_b = csf_data[x,y,z]
                 pixel_a = tum_flair[x,y,z]
-        
-                if pixel_b > 0 and pixel_a > 0:
+
+                if pixel_b <= csf_voxel:
+                    csf_data[x,y,z] = 0
+                elif pixel_b > 0 and pixel_a > 0:
                     csf_data[x,y,z] = 0
                     removed += 1
 
@@ -108,6 +123,40 @@ def main():
     nib.save(clipped_img, path + "CSF" + prefix)
     logger.info(f"kept {kept} unmatching voxels")
 
+    wm_img = nib.load(path + "WM" + prefix)
+    wm_data = wm_img.get_fdata()
+    wm_voxel = wm_data[0,0,0]
+
+    logger.info("clear background in WM")
+    for x in range(wm_img.header.get_data_shape()[0]):
+        for y in range(wm_img.header.get_data_shape()[1]):
+            for z in range(wm_img.header.get_data_shape()[2]):
+
+                pixel = wm_data[x,y,z]
+            
+                if pixel <= wm_voxel:
+                    wm_data[x,y,z] = 0
+
+    clipped_img = nib.Nifti1Image(wm_data, reference_img.affine, reference_img.header)
+    nib.save(clipped_img, path + "WM" + prefix)
+
+    gm_img = nib.load(path + "GM" + prefix)
+    gm_data = gm_img.get_fdata()
+    gm_voxel = gm_data[0,0,0]
+
+    logger.info("clear background in GM")
+    for x in range(gm_img.header.get_data_shape()[0]):
+        for y in range(gm_img.header.get_data_shape()[1]):
+            for z in range(gm_img.header.get_data_shape()[2]):
+
+                pixel = gm_data[x,y,z]
+            
+                if pixel <= gm_voxel:
+                    gm_data[x,y,z] = 0
+
+    clipped_img = nib.Nifti1Image(gm_data, reference_img.affine, reference_img.header)
+    nib.save(clipped_img, path + "GM" + prefix)
+    
     logger.info("done")
     
 def rename(old, new):
