@@ -16,7 +16,7 @@ def main():
         logger.error("Missing argument; 1: reference image path 1, 2: base path")
         quit()
 
-    logger.info("starting header comparison...")
+    logger.info("starting image processing...")
 
     reference_path = sys.argv[1]
     global path
@@ -121,7 +121,7 @@ def main():
 
     clipped_img = nib.Nifti1Image(csf_data, reference_img.affine, reference_img.header)
     nib.save(clipped_img, path + "CSF" + prefix)
-    logger.info(f"kept {kept} unmatching voxels")
+    logger.info(f"removed {removed} voxels")
 
     wm_img = nib.load(path + "WM" + prefix)
     wm_data = wm_img.get_fdata()
@@ -156,6 +156,23 @@ def main():
 
     clipped_img = nib.Nifti1Image(gm_data, reference_img.affine, reference_img.header)
     nib.save(clipped_img, path + "GM" + prefix)
+
+    logger.info("intersect Tum_FLAIR and Tum_T1c")
+    removed = 0
+    for x in range(tum_flair.shape[0]):
+        for y in range(tum_flair.shape[1]):
+            for z in range(tum_flair.shape[2]):
+
+                pixel_b = tum_flair[x,y,z]
+                pixel_a = tum_c1[x,y,z]
+
+                if pixel_b > 0 and pixel_a > 0:
+                    tum_flair[x,y,z] = 0
+                    removed += 1
+
+    clipped_img = nib.Nifti1Image(tum_flair, reference_img.affine, reference_img.header)
+    nib.save(clipped_img, path + "Tum_FLAIR" + prefix)
+    logger.info(f"removed {removed} voxels")
     
     logger.info("done")
     
