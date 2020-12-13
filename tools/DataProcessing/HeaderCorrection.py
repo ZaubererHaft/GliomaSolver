@@ -1,22 +1,23 @@
-import Nifti as ni
 import logging
 import sys
 import os.path
-import nibabel as nib
+import NiftiNibabel
+import NiftiSimpleITK
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
 
-    if len(sys.argv) <= 2:
-        logger.error("Missing argument; 1: template path 1, 2: correction path")
+    if len(sys.argv) <= 3:
+        logger.error("Missing argument; 1: template path 1, 2: correction path, 3: nifti impl (1: simpleITK, else: nibabel)")
         quit()
 
     logger.info("starting header comparison...")
 
     path_1 = sys.argv[1]
     path_2 = sys.argv[2]
+    ni = NiftiSimpleITK.NiftiSimpleITK() if sys.argv[3] == "1" else NiftiNibabel.NiftiNibabel()
 
     for component in os.listdir(path_1):     
         join_1 = f"{path_1}{component}"
@@ -48,13 +49,9 @@ def main():
                 logger.info("no meta data differ")
 
             print("")
- 
-            img2 = nib.load(join_2)
-            img1 = nib.load(join_1)
 
-            data = img2.get_fdata()
-            clipped_img = nib.Nifti1Image(data, img1.affine, img1.header)
-            nib.save(clipped_img, join_2)
+            img = ni.create_image_by(img_1, img_2)
+            ni.write_image(img, join_1)
 
     logger.info("done")
 
